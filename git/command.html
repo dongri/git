@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="../stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="../stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="../stylesheets/print.css" media="print" />
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>dongriab @ github</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>dongriab @ github</h1>
+          <h2></h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/dongriab" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+
+<h3>ソースからインストール</h3>
+Gitが依存するライブラリーである、curl、zlib、openssl、expat、libiconvを入手。CentOS, Fedora (yum) か Debian (apt-get)
+<pre><code>$ yum install curl-devel expat-devel gettext-devel \
+  openssl-devel zlib-devel
+
+$ apt-get install libcurl4-gnutls-dev libexpat1-dev gettext \
+  libz-dev libssl-dev
+</code></pre> 
+コンパイルしてインストール
+<pre><code>$ tar -zxf git-1.7.2.2.tar.gz
+$ cd git-1.7.2.2
+$ make prefix=/usr/local all
+$ sudo make prefix=/usr/local install
+</code></pre> 
+
+<h3>*nixにインストール</h3>
+<pre><code>$ yum install git-core
+$ apt-get install git-core
+</code></pre> 
+
+<h3>Macにインストール</h3>
+<pre><code>http://code.google.com/p/git-osx-installer
+port, homebrewでインストール
+$ sudo port install git-core +svn +doc +bash_completion +gitweb
+$ brew install git
+</code></pre> 
+
+<h3>構成ファイル</h3>
+/etc/gitconfig : システム上の全てのユーザーと全てのリポジトリに対する設定値を保持<br/>
+~/.gitconfig : 特定のユーザーに対する設定値を保持<br/>
+Gitをインストールしたときに最初にすべきことは、ユーザー名とE-mailアドレスを設定<br/>
+<pre><code>$ git config --global user.name "Dongri Jin"
+$ git config --global user.email dongriab@gmail.com
+</code></pre> 
+エディター, diffツール
+<pre><code>$ git config --global core.editor emacs
+$ git config --global merge.tool vimdiff
+</code></pre>
+設定の確認
+<pre><code>$ git config --list
+user.name=Dongri Jin
+user.email=dongriab@gmail.com
+color.status=auto
+color.branch=auto
+color.interactive=auto
+color.diff=auto
+...
+
+$ git config user.name
+Dongri Jin
+</code></pre>
+
+<h3>ヘルプを見る</h3>
+<pre><code>$ git help [verb]
+$ git [verb] --help
+$ man git-[verb]
+$ git help config
+</code></pre>
+
+<hr/>
+
+<h3>git init － 既存のディレクトリでのリポジトリの初期化</h3>
+<pre><code>$ cd repo/
+$ git init
+Initialized empty Git repository in /Users/dongriab/web/repo/.git/
+$</code></pre>
+.gitディレクトリが作成され、Gitリポジトリの管理ファイル等がここに作成される。
+
+
+<h3>git clone － 既存のリポジトリの複製を作る</h3>
+<pre><code>$ git clone git@github.com:dongriab/repo.git
+Cloning into repo...
+remote: Counting objects: 3, done.
+remote: Total 3 (delta 0), reused 3 (delta 0)
+Receiving objects: 100% (3/3), done.
+$
+
+#最新リビジョンだけを取得したい場合、「--depth 1」と指定する。(履歴情報なし)
+$ git clone --depth 1 git@github.com:dongriab/repo.git</code></pre>
+既存のリポジトリからローカルにファイルをコピーして作業用のリポジトリを作成する
+
+<h3>git fsck － リポジトリの正当性チェックを行う</h3>
+<pre><code>$ git fsck
+$ git fsck --full
+</code></pre>
+リポジトリがもし破損した可能性がある場合、「git fsck」で破損している個所を検出できる。
+
+<h3>git gc － リポジトリ内の不要なオブジェクトを削除し、最適化を行う</h3>
+<pre><code>$ git gc
+</code></pre>
+
+<h3>git status － 変更が加えられたファイルを表示する</h3>
+<pre><code>$ git status
+# On branch master
+# Changes not staged for commit:
+#   (use "git add <file>..." to update what will be committed)
+#   (use "git checkout -- <file>..." to discard changes in working directory)
+#
+#	modified:   index.html
+#
+no changes added to commit (use "git add" and/or "git commit -a")
+$
+</code></pre>
+
+<h3>git diff － ファイルに加えられた変更点をdiff形式で表示する</h3>
+<pre><code>$ git diff index.html
+diff --git a/index.html b/index.html
+index 9daeafb..d1daa48 100644
+--- a/index.html
++++ b/index.html
+@@ -1 +1,2 @@
+ test
++add line
+$
+</code></pre>
+特定のファイルにどのような変更が加えられたかは「git diff」コマンドで確認できる。
+
+<h3>git add － コミットするファイルを指定する(変更したファイルのステージング)</h3>
+<pre><code>$ echo "add file" > file2.txt
+$ git add file2.txt
+</code></pre>
+
+<h3>git commit － 変更点をコミットする</h3>
+<pre><code>$ git commit
+$ git commit -a
+$ git commit -m "commit log"
+</code></pre>
+git commitを「-a」オプションを付けて実行すると変更が加えられたファイルを自動検出してコミットできる。ただし、この場合新規に作成されたファイルはコミット対象にはならない。
+
+<h3>git log － コミットログを閲覧する</h3>
+<pre><code>$ git log
+commit 1ecb9e702ef97d630b8c88be71c6ef625582ae11
+Author: Dongri Jin <dongriab@gmail.com>
+Date:   Thu Sep 15 16:54:09 2011 +0900
+    add file2.txt comment
+commit e35156fa8fb1f112d6e0d214a62ecff13d4aa840
+Author: Dongri Jin <dongriab@gmail.com>
+Date:   Thu Sep 15 16:10:54 2011 +0900
+    test
+$
+</code></pre>
+
+<h3>git rm － ファイルの削除がステージされる</h3>
+<pre><code>$ git rm --cached master.txt 
+rm 'master.txt'
+macbookpro:pro dongriab$ git status
+# On branch master
+# Changes to be committed:
+#   (use "git reset HEAD <file>..." to unstage)
+#
+# deleted:    master.txt
+#
+</code></pre>
+
+<h3>git commit --amend － 直近のコミットの変更</h3>
+<pre><code>$ git commit --amend
+delete master.txt
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Changes to be committed:
+#   (use "git reset HEAD^1 <file>..." to unstage)
+#
+#   deleted:    master.txt
+#
+</code></pre>
+
+
+<h3>git reset － 直前のコミットを取り消す</h3>
+<pre><code>$ git reset --soft HEAD^
+</code></pre>
+コミット後に小さなミスなどに気付いた場合などに便利なのが「git reset」だ。たとえばコミット後に「git reset --soft HEAD^」と実行すると、直前に行ったコミットを取り消すことができる。
+この場合、作業ツリーの内容はコミット時のままで「コミットした」ということだけが取り消される。もし作業ツリーに加えた変更点までも取り消したい場合は、「--soft」の代わりに「--hard」を指定すればよい、
+
+<h3>git revert － 作業ツリーを指定したコミット時点の状態にまで戻す</h3>
+<pre><code>$ git revert e26d5402e8bee25d9c2369cc599570be5d726f69
+</code></pre>
+「git revert」は作業ツリーを指定したコミット時点の状態にまで戻し、コミットを行うコマンドである。引数にはコミットを指定するハッシュ文字列もしくはタグ名などを指定する。
+git revertはgit resetと似ているが、作業ツリーを差し戻したという情報が作業履歴に残るのが異なる点だ。
+
+<h3>git branch － ブランチ情報の表示およびブランチの作成</h3>
+<pre><code>$ git branch
+* master
+$ git branch dev
+$ git branch
+  dev
+* master
+$
+</code></pre>
+branchの表示、作成
+
+<h3>git checkout　－　ブランチの切り替え</h3>
+<pre><code>$ git checkout dev
+Switched to branch 'dev'
+$ git branch
+* dev
+  master
+$
+</code></pre>
+git checkoutに「-b」オプションを付けて実行すると、新たにブランチを作成してそのブランチに切り替える、という作業が一発で行える。
+
+<h3>git show-branch　－　ブランチの作成/変更/マージ履歴を表示</h3>
+<pre><code>$ git show-branch
+* [dev] Revert "add file4"
+ ! [master] Revert "add file4"
+--
+*+ [dev] Revert "add file4"
+$
+</code></pre>
+どのブランチがどのブランチを元に作られたか、という情報は「git show-branch」で確認できる。git show-branchでは次の例のような出力を行うが、前半の「---」までがブランチ履歴、「---」から後半が最近のコミット履歴を表している。
+
+<h3>git merge　－　ローカルブランチのマージを行う</h3>
+「git merge」は、現在の作業ブランチに別のブランチで行われた変更点を取り込むコマンドだ。
+<pre><code>$ git merge ＜変更点の取り込み元ブランチ＞
+$ git merge release
+Updating bed0e14..a709399
+Fast-forward
+ release.txt |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+ create mode 100644 release.txt
+$
+</code></pre>
+
+<h3>git tag　－　コミットにタグを付ける</h3>
+Gitではコミットをハッシュ文字列で管理しているため、ユーザー側から見るとどの文字列がどのコミットを表しているのか分かりにくい。「git tag」は、直前のコミットに対して分かりやすい別名（タグ）を付けるコマンドだ。
+<pre><code>$ git tag rev1    （「rev1」というタグを付ける）
+$ git tag         （タグを確認する）
+</code></pre>
+
+<h3>git stash　－　現在の作業ツリーの状態を一時的に保管する</h3>
+現在の作業中の状態をコミットせずに、一時的にほかのブランチに対して作業を行いたい、という場合に役立つのが、「git stash」コマンドだ。このコマンドでは、現在の作業ツリーの状態を一時的に保存しておくことができる。
+<pre><code>$ git stash ＜保存名もしくはコメントなど＞
+</code></pre>
+
+<h3>git rebase　－　ブランチの派生元（上流）を変更する</h3>
+「git rebase」は、「ブランチの派生元を変更する」という、CVSやSubversionにはなかったユニークな機能である。git rebaseがどのような処理を行うかは次の図1を参照してほしいが、簡単に言えばあるブランチに対して行った変更点を、派生元のより新しいリビジョンのものに適用するものだ。
+<pre><code>$ git rebase ＜派生元ブランチ＞
+</code></pre>
+
+<h3>git pull　－　ほかのリポジトリの変更点をローカルリポジトリにマージする</h3>
+<pre><code>$ git pull ＜変更点の取り込み元リポジトリ＞
+$ git pull
+</code></pre>
+変更点の取り込み元リポジトリは、git cloneの場合と同様にURLで指定する（表1）。また、git cloneコマンドで作成したリポジトリの場合、.git/config内の「remote」項目などに複製元リポジトリのURLが自動的に記録されるため、複製元リポジトリからpullを行う場合は下記のように取り込み元リポジトリを指定しなくとも実行できる。
+
+<h3>git push － 公開リポジトリに自分のリポジトリの内容を送信する</h3>
+<pre><code>$ git push ＜送信先リポジトリ＞ ＜送信するブランチ＞:＜送信先ブランチ＞
+</code></pre>
+git pullはほかのリポジトリの内容を自分のリポジトリに取り込むものだったが、逆に自分のリポジトリの内容をほかのリポジトリ（一般的には公開リポジトリ）に送信して取り込ませるコマンドが「git push」である。
+git pushの引数には、送信先のリポジトリURLと送信するブランチ、送信先ブランチを指定する。
+
+<h3>git submodule － サブモジュール化</h3>
+<pre><code>$ git submodule add git@github.com:dongriab/html5.git
+Cloning into html5...
+remote: Counting objects: 34, done.
+remote: Compressing objects: 100% (25/25), done.
+remote: Total 34 (delta 7), reused 22 (delta 1)
+Receiving objects: 100% (34/34), 181.03 KiB | 63 KiB/s, done.
+Resolving deltas: 100% (7/7), done.
+$ ls
+dev.txt		file3.txt	html5		index.html	release.txt
+$
+</code></pre>
+<pre><code>$ cat .git/config 
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+	ignorecase = true
+[remote "origin"]
+	fetch = +refs/heads/*:refs/remotes/origin/*
+	url = git@github.com:dongriab/repo.git
+[branch "master"]
+	remote = origin
+	merge = refs/heads/master
+	
+$ git submodule init
+Submodule 'html5' (git@github.com:dongriab/html5.git) registered for path 'html5'
+$ cat .git/config 
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+	ignorecase = true
+[remote "origin"]
+	fetch = +refs/heads/*:refs/remotes/origin/*
+	url = git@github.com:dongriab/repo.git
+[branch "master"]
+	remote = origin
+	merge = refs/heads/master
+[submodule "html5"]
+	url = git@github.com:dongriab/html5.git
+$
+$ git submodule foreach git pull origin master
+$ git submodule update
+</code></pre>
+
+        </section>
+
+        <footer>
+          <a href="../index.html">Home</a> | <a href="command.html">git comand</a> | 
+          <a href="flow.html">git flow</a> | <a href="http://twitter.com/dongriab">@dongriab</a>.
+        </footer>
+      </div>
+    </div>
+  </body>
+</html>
